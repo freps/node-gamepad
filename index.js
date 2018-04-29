@@ -141,7 +141,7 @@ Gamepad.prototype._detectControllerConfiguration = function() {
     return false;
 };
 
-Gamepad.prototype.connect = function() {
+Gamepad.prototype.connect = function(path) {
     if( ! this._detectControllerConfiguration() ) {
         console.log( ( 'A product for the vendor "' + this._type + '" could not be detected.' ).red );
         process.exit( 0 );
@@ -149,7 +149,11 @@ Gamepad.prototype.connect = function() {
 
     this.emit( 'connecting' );
     this._loadConfiguration();
-    this._usb = new HID.HID( this._config.vendorID, this._config.productID );
+    if (path) {
+        this._usb = new HID.HID( path );
+    } else {
+        this._usb = new HID.HID( this._config.vendorID, this._config.productID );
+    }
 
     // Debug: Show each pin and current value
     if (typeof this._options.debug === 'boolean' && this._options.debug === true) {
